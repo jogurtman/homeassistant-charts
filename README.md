@@ -1,6 +1,6 @@
 # SimpleBarPieCard.js - Version 1.0
 ## Installation
-Just put this file in your config/www/ (or homeassistant/www/) folder, then go to
+Upload the "SimpleBarPieCard.js" file in your config/www/ (or homeassistant/www/) folder, then go to
 
 Settings -> Dashboards -> three dots at top right -> Resources -> + Add resource -> /local/SimpleBarPieCard.js
 
@@ -12,7 +12,7 @@ Let's upgrade this addon together.
 ## Disclaimer
 This Add-On was originally designed for personal use only. 
 Therefore, unfortunately, comments and good documentation are missing.
-The reason I created this is because I wanted to personalize the "energy-devices-graph" card
+The reason this was created is because I wanted to personalize the "energy-devices-graph" card
 which is only shown in the "Energy" tab. Furthermore, the only reason I have published this is
 because I thought anyone would like to personilize that specific chart too.
 This is my first .js script. USE AT YOUR OWN RISK!
