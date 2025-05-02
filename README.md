@@ -22,7 +22,7 @@ that, e.g., the bar of 1200Wh will be longer than the bar of 12kWh. I know this 
 but the charts only use the raw numbers (it is quite easy to change this either in the 
 configuration.yaml or with a template).
 
-## Creating a chart
+## Chart types and how to create them
 Since the visual editor is not supported, you have to manually write the YAML-Code.
 You cann add as many sensors as you want!
 Here is how:
