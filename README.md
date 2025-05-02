@@ -24,7 +24,7 @@ configuration.yaml or with a template).
 
 ## Chart types and how to create them
 Since the visual editor is not supported, you have to manually write the YAML-Code.
-You cann add as many sensors as you want!
+You can add as many sensors as you want!
 Here is how:
 
 ### Horizontal bar chart
