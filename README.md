@@ -1,6 +1,6 @@
 # SimpleBarPieCard.js - Version 1.0
 ## Installation
-Upload the "SimpleBarPieCard.js" file in your config/www/ (or homeassistant/www/) folder, then go to
+Upload the "SimpleBarPieCard.js" file to your "config/www/" (or homeassistant/www/) folder, then go to
 
 Settings -> Dashboards -> three dots at top right -> Resources -> + Add resource -> /local/SimpleBarPieCard.js
 
