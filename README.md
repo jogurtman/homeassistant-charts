@@ -1,10 +1,13 @@
 # SimpleBarPieCard.js - Version 1.0
+![SimpleBarPieCard](https://github.com/user-attachments/assets/9174c8fb-da54-46bb-bad5-f079760bdd26)
+
 ## Installation
-Upload the "SimpleBarPieCard.js" file to your "config/www/" (or homeassistant/www/) folder, then go to
+Upload the **SimpleBarPieCard.js** file to your **config/www/** (or **homeassistant/www/**) folder, then go to
 
-Settings -> Dashboards -> three dots at top right -> Resources -> + Add resource -> /local/SimpleBarPieCard.js
+*Settings* -> *Dashboards* -> three dots at top right -> *Resources* -> *+ Add resource* -> /local/SimpleBarPieCard.js
 
-After that, restart your system. Visual Editor is not supported!
+After that, restart your system and start creating charts!
+The visual Editor is not supported, see [how to create a chart](#chart-types-and-how-to-create-them)
 
 ## Feel free to contribute!
 Let's upgrade this addon together.
@@ -30,7 +33,7 @@ Here is how:
 ### Horizontal bar chart
 The horizontal bar chart supports colored icons!
 
-![Horizontal bar chart](https://github.com/user-attachments/assets/cdb507d3-f995-49c4-b60d-8879c786d4ba)
+![Horizontal bar chart](https://github.com/user-attachments/assets/1881cf96-cc88-4329-ba8e-6612b5c433c2)
 ```
 type: custom:simple-bar-pie
 title: My horizontal bar chart
@@ -51,7 +54,7 @@ entities:
 ```
 
 ### Vertical bar chart
-![Vertical bar chart](https://github.com/user-attachments/assets/0037e7ed-86aa-48a2-8459-cabbdb920b1a)
+![Vertical bar chart](https://github.com/user-attachments/assets/06090cb4-ac93-403f-8b90-c658408345a5)
 ```
 type: custom:simple-bar-pie
 title: My vertical bar chart
@@ -66,7 +69,7 @@ entities:
 ```
 
 ### Pie chart
-![Pie chart](https://github.com/user-attachments/assets/1f5c23af-b05e-46a8-964d-bc71bf38f5b1)
+![Pie chart](https://github.com/user-attachments/assets/244f9253-0546-411b-8f81-097e637ad27e)
 ```
 type: custom:simple-bar-pie
 title: My pie Chart
