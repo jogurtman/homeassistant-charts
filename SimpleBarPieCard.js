@@ -1,20 +1,20 @@
 /*
 ---------------------------------
-SimpleBarPieCard.js - Version 1.0
+SimpleBarPieCard.js - Version 1.1
 ---------------------------------
 INSTALLATION:
-Just put this file in your config/www/ (or homeassistant/www/) folder, then go to
+Upload this file to your config/www/ (or homeassistant/www/) folder, then go to
 Settings -> Dashboards -> three dots at top right -> Resources -> + Add resource -> /local/SimpleBarPieCard.js
 After that, restart your system. Visual Editor is not supported!
 
 This Add-On was originally designed for personal use only. 
 Therefore, unfortunately, comments and good documentation are missing. 
-The reason I created this is because I wanted to personalize the "energy-devices-graph" card
-which is only shown in the "Energy" tab. Furthermore, the only reason I published this is
-because I thought anyone would like to personilize that specfiic chart too.
-This is the first .js script I have created. USE AT YOUR OWN RISK!
-Here I explain at least some functions:
+The reason this was created is because I wanted to personalize the "energy-devices-graph" 
+card which is only shown in the "Energy" tab. Furthermore, the only reason I have published 
+this is because I thought anyone would like to personilize that specific chart too. 
+This is my first .js script. USE AT YOUR OWN RISK!
 
+Explanation of the most important functions:
 drawPie() draws the pie chart
 drawBar() draws the bar chart with horizontal bars
   -> the only chart where icons are supported
@@ -59,9 +59,18 @@ class SimpleBarPieCard extends HTMLElement {
         height: 12px;
         position: absolute;
       }
+      #wrapper {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid rgba(224, 224, 224, 1);
+        padding: 12px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet);
     </style>
-    <div id="wrapper" style="padding: 6px; text-align: center;">
-      <h3 id="title" style="margin: 0 0 2px;"></h3>
+    <div id="wrapper">
+      <h3 id="title" style="margin: 0 0 0; font-family: Roboto, Noto, sans-serif; font-size: 24px; font-weight: 400; color: rgb(33, 33, 33); letter-spacing: -0.288px; line-height: 40px; text-align: left; padding-left: 4px; padding-right: 4px; padding-top: 0"></h3>
       <div style="position: relative; width: 100%; max-width: 100%; overflow-x: auto;">
         <canvas id="diagram" style="width: 100%; height: auto;"></canvas>
         <div id="icons" class="icon-container"></div>
@@ -116,7 +125,7 @@ class SimpleBarPieCard extends HTMLElement {
           <div style="width: 10px; height: 10px; background: ${d.color}; margin-right: 4px; border-radius: 50%;"></div>
           ${d.name} (${d.value.toFixed(1)} ${d.unit})`;
         item.addEventListener("click", () => {
-          this.showTooltip(tooltip, `${d.name}: ${d.value} ${d.unit}`, canvas);
+          this.showTooltip(tooltip, `${d.name}: ${d.value} ${d.unit}`, canvas, canvas.offsetWidth / 2, canvas.offsetHeight / 2);
         });
         legend.appendChild(item);
       });
@@ -180,10 +189,12 @@ class SimpleBarPieCard extends HTMLElement {
 
   }
 
-  showTooltip(tooltip, text, canvas) {
+  showTooltip(tooltip, text, canvas, centerX = null, centerY = null) {
     tooltip.innerText = text;
-    tooltip.style.left = `${canvas.offsetWidth / 2}px`;
-    tooltip.style.top = `${canvas.offsetHeight / 2}px`;
+    const left = centerX !== null ? centerX+15 : canvas.offsetWidth / 2;
+    const top = centerY !== null ? centerY+45 : canvas.offsetHeight / 2;
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
     tooltip.style.display = "block";
     clearTimeout(this.tooltipTimer);
     this.tooltipTimer = setTimeout(() => tooltip.style.display = "none", 3000);
