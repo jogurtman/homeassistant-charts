@@ -1,4 +1,4 @@
-# SimpleBarPieCard.js
+# SimpleBarPieCard.js for HomeAssistant
 ![SimpleBarPieCard](https://github.com/user-attachments/assets/9174c8fb-da54-46bb-bad5-f079760bdd26)
 
 ## Installation
