@@ -1,7 +1,7 @@
 /*
----------------------------------
-SimpleBarPieCard.js - Version 1.1
----------------------------------
+-----------------------------------
+SimpleBarPieCard.js - Version 1.1.1
+-----------------------------------
 INSTALLATION:
 Upload this file to your config/www/ (or homeassistant/www/) folder, then go to
 Settings -> Dashboards -> three dots at top right -> Resources -> + Add resource -> /local/SimpleBarPieCard.js
@@ -62,12 +62,12 @@ class SimpleBarPieCard extends HTMLElement {
       #wrapper {
         background: #fff;
         border-radius: 12px;
-        border: 1px solid rgba(224, 224, 224, 1);
+        border: 1px solid rgb(224, 224, 224);
         padding: 12px;
         box-sizing: border-box;
         text-align: center;
       }
-      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet);
+      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet");
     </style>
     <div id="wrapper">
       <h3 id="title" style="margin: 0 0 0; font-family: Roboto, Noto, sans-serif; font-size: 24px; font-weight: 400; color: rgb(33, 33, 33); letter-spacing: -0.288px; line-height: 40px; text-align: left; padding-left: 4px; padding-right: 4px; padding-top: 0"></h3>
@@ -96,11 +96,16 @@ class SimpleBarPieCard extends HTMLElement {
 
     const colorList = [
       "rgba(50, 100, 255, 0.6)", // blue
-      "rgba(255, 100, 100, 0.6)", // light red
-      "rgba(50, 255, 50, 0.6)", // green
-      "rgba(10, 220, 220, 0.6)", // turquoise
+      "rgba(255, 30, 30, 0.6)", // red
+      "rgba(0, 200, 0, 0.6)", // green
+      "rgba(10, 200, 200, 0.6)", // turquoise-blue
       "rgba(200, 100, 255, 0.6)", // lila
-      "rgba(255, 200, 50, 0.6)" // gold
+      "rgba(255, 200, 50, 0.6)", // gold
+	  "rgba(220, 120, 0, 0.6)", // bronze
+	  "rgba(125, 155, 255, 0.6)", // light blue
+	  "rgba(255, 130, 130, 0.6)", // light red
+	  "rgba(100, 255, 100, 0.6)", // light green
+	  "rgba(55, 220, 155, 0.6)" // turquoise-green
     ];
 
     let data = entities.map((e, i) => ({
@@ -132,23 +137,23 @@ class SimpleBarPieCard extends HTMLElement {
     }
 
     const resizeCanvas = () => {
-      const containerWidth = canvas.parentElement.offsetWidth;
-      const canvasWidth = containerWidth * ratio;
+      const containerWidth = canvas.parentElement.offsetWidth-1; // -1 to stop unnecessary overflow-x
+      const canvasWidth = (type === "vertbar" ? Math.max(containerWidth, data.length*60+30) : containerWidth) * ratio;
       const canvasHeight = (type === "pie" ? 220 : (type === "bar" ? data.length * 35 + 5 : 320)) * ratio;
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
-      canvas.style.width = containerWidth + "px";
-      canvas.style.height = canvasHeight / ratio + "px";
+      canvas.style.width = (canvasWidth / ratio) + "px";
+      canvas.style.height = (canvasHeight / ratio) + "px";
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(ratio, ratio);
-
+    
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (type === "pie") {
         this.drawPie(ctx, data, canvas);
-      } else if (type === "bar") {
-        this.drawBar(ctx, data, canvas, iconContainer);
-      } else {
+      } else if (type === "vertbar") {
 		this.drawVertBar(ctx, data, canvas);
+      } else {
+        this.drawBar(ctx, data, canvas, iconContainer);
 	  }
     };
 
@@ -191,7 +196,7 @@ class SimpleBarPieCard extends HTMLElement {
 
   showTooltip(tooltip, text, canvas, centerX = null, centerY = null) {
     tooltip.innerText = text;
-    const left = centerX !== null ? centerX+15 : canvas.offsetWidth / 2;
+    const left = centerX !== null ? centerX+15 : canvas.parentElement.offsetWidth / 2;
     const top = centerY !== null ? centerY+45 : canvas.offsetHeight / 2;
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -206,7 +211,7 @@ class SimpleBarPieCard extends HTMLElement {
     const cx = canvas.width / 2 / (window.devicePixelRatio || 1);
     const cy = canvas.height / 2 / (window.devicePixelRatio || 1);
     const r = Math.min(cx, cy) / 1.1;
-    const sorted = [...data].sort((a, b) => b.value - a.value);
+    // const sorted = [...data].sort((a, b) => b.value - a.value);
     // const topTwo = sorted.slice(0, 2);
 
     data.forEach((d) => {
