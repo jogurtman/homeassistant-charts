@@ -1,6 +1,6 @@
 /*
 -----------------------------------
-SimpleBarPieCard.js - Version 1.1.1
+SimpleBarPieCard.js - Version 1.1.2
 -----------------------------------
 INSTALLATION:
 Upload this file to your config/www/ (or homeassistant/www/) folder, then go to
@@ -75,8 +75,8 @@ class SimpleBarPieCard extends HTMLElement {
         <canvas id="diagram" style="width: 100%; height: auto;"></canvas>
         <div id="icons" class="icon-container"></div>
       </div>
-      <div id="legend" style="margin-top: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font-size: 0.85em;"></div>
-      <div id="tooltip" style="position:absolute; display:none; background:#fff; border:1px solid #ccc; padding:5px; font-size:0.85em; pointer-events:none; z-index:10; transform: translate(-50%, -50%);"></div>
+      <div id="legend" style="margin-top: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font-size: 0.85em; font-family: Roboto, Noto, sans-serif;"></div>
+      <div id="tooltip" style="position:absolute; display:none; background:#fff; border:1px solid #ccc; padding:5px; font-size:0.85em; font-family: Roboto, Noto, sans-serif; pointer-events:none; z-index:10; transform: translate(-50%, -50%);"></div>
     </div>`;
   }
 
@@ -138,7 +138,7 @@ class SimpleBarPieCard extends HTMLElement {
 
     const resizeCanvas = () => {
       const containerWidth = canvas.parentElement.offsetWidth-1; // -1 to stop unnecessary overflow-x
-      const canvasWidth = (type === "vertbar" ? Math.max(containerWidth, data.length*60+30) : containerWidth) * ratio;
+      const canvasWidth = (type === "vertbar" ? Math.max(containerWidth, data.length*60+30) : (type === "bar" ? Math.max(containerWidth, 180) : containerWidth)) * ratio;
       const canvasHeight = (type === "pie" ? 220 : (type === "bar" ? data.length * 35 + 5 : 320)) * ratio;
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
@@ -150,10 +150,10 @@ class SimpleBarPieCard extends HTMLElement {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (type === "pie") {
         this.drawPie(ctx, data, canvas);
+      } else if (type === "bar") {
+        this.drawBar(ctx, data, canvas, iconContainer);
       } else if (type === "vertbar") {
 		this.drawVertBar(ctx, data, canvas);
-      } else {
-        this.drawBar(ctx, data, canvas, iconContainer);
 	  }
     };
 
@@ -196,7 +196,13 @@ class SimpleBarPieCard extends HTMLElement {
 
   showTooltip(tooltip, text, canvas, centerX = null, centerY = null) {
     tooltip.innerText = text;
-    const left = centerX !== null ? centerX+15 : canvas.parentElement.offsetWidth / 2;
+    let left;
+    const parentWidth = canvas.parentElement.offsetWidth;
+    if (parentWidth <= 140) {
+        left = 200;
+    } else {
+        left = centerX !== null ? centerX+15 : parentWidth / 2;
+    }
     const top = centerY !== null ? centerY+45 : canvas.offsetHeight / 2;
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -215,24 +221,26 @@ class SimpleBarPieCard extends HTMLElement {
     // const topTwo = sorted.slice(0, 2);
 
     data.forEach((d) => {
-      const slice = (d.value / total) * 2 * Math.PI;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.fillStyle = d.color;
-      ctx.arc(cx, cy, r, startAngle, startAngle + slice);
-      ctx.closePath();
-      ctx.fill();
-      // if (topTwo.some(t => t.name === d.name)) { // data of two biggest entities are printed on the pie
-	  if ((d.value / total >= 0.125)) { // If an entity takes 1/8 of the pie chart, its data will be shown on the pie
-        const midAngle = startAngle + slice / 2;
-        const labelX = cx + Math.cos(midAngle) * (r / 1.5);
-        const labelY = cy + Math.sin(midAngle) * (r / 1.5);
-        ctx.fillStyle = "#333";
-        ctx.font = "0.85em sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(`${Math.round(d.value)} ${d.unit}`, labelX, labelY);
-      }
-      startAngle += slice;
+      if(d.value != 0) {
+        const slice = (d.value / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.fillStyle = d.color;
+        ctx.arc(cx, cy, r, startAngle, startAngle + slice);
+        ctx.closePath();
+        ctx.fill();
+        // if (topTwo.some(t => t.name === d.name)) { // data of two biggest entities are printed on the pie
+        if ((d.value / total >= 0.125)) { // If an entity takes 1/8 of the pie chart, its data will be shown on the pie
+          const midAngle = startAngle + slice / 2;
+          const labelX = cx + Math.cos(midAngle) * (r / 1.5);
+          const labelY = cy + Math.sin(midAngle) * (r / 1.5);
+          ctx.fillStyle = "#333";
+          ctx.font = "0.85em sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(`${Math.round(d.value)} ${d.unit}`, labelX, labelY);
+          }
+          startAngle += slice;
+        }
     });
   }
 
@@ -241,30 +249,44 @@ class SimpleBarPieCard extends HTMLElement {
     const barHeight = 20;
     const gap = 15;
     const availableWidth = canvas.width / window.devicePixelRatio - 175;
+    const barStartX = 110;
 
     iconContainer.innerHTML = "";
+    
+    // draw a vertical line (light gray)
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
+    ctx.lineWidth = 1;
+    ctx.moveTo(barStartX, 5); // starting point (top)
+    ctx.lineTo(barStartX, data.length * (barHeight + gap) - 10); // ending point (bottom)
+    ctx.stroke();
+    
     data.forEach((d, i) => {
       const y = i * (barHeight + gap) + 5;
       const barLength = (d.value / maxValue) * availableWidth;
+      const baseColor = d.color;
       
       // Text positions
       const iconSpace = d.icon ? 20 : 0;
       const textX = 105 - iconSpace;
       
       // Draw the bar
-      ctx.fillStyle = d.color;
       ctx.beginPath();
-      ctx.moveTo(110, y);
-      ctx.lineTo(110 + barLength, y);
-      ctx.arcTo(110 + barLength + 5, y, 110 + barLength + 5, y + barHeight, 5);
-      ctx.lineTo(110 + barLength, y + barHeight);
-      ctx.lineTo(110, y + barHeight);
+      ctx.moveTo(barStartX, y);
+      ctx.lineTo(barStartX + barLength, y);
+      ctx.arcTo(barStartX + barLength + 5, y, barStartX + barLength + 5, y + barHeight, 5);
+      ctx.lineTo(barStartX + barLength, y + barHeight);
+      ctx.lineTo(barStartX, y + barHeight);
       ctx.closePath();
+      ctx.fillStyle = baseColor.replace('0.6)', '0.4)');
       ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = baseColor.replace('0.6)', '0.9)');
+      ctx.stroke();
 
       // Draw the name text
       ctx.fillStyle = "#333";
-      ctx.font = "0.85em sans-serif";
+      ctx.font = "0.85em Roboto, Noto, sans-serif";
       ctx.textAlign = "right";
       ctx.fillText(d.name, textX, y + barHeight - 5);
       
@@ -319,27 +341,32 @@ class SimpleBarPieCard extends HTMLElement {
       // Draw rounded bar with border
       ctx.fillStyle = lighterColor;
       ctx.strokeStyle = baseColor.replace('0.6)', '0.9)');
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.5;
       
       const radius = 5; // Rounded corners radius
       const barX = x;
       const barY = availableHeight + 40 - barHeight;
       
-      ctx.beginPath();
-      // Top left corner
-      ctx.moveTo(barX + radius, barY);
-      // Top right corner
-      ctx.lineTo(barX + barWidth - radius, barY);
-      ctx.quadraticCurveTo(barX + barWidth, barY, barX + barWidth, barY + radius);
-      // Bottom right corner
-      ctx.lineTo(barX + barWidth, barY + barHeight - radius);
-      ctx.quadraticCurveTo(barX + barWidth, barY + barHeight, barX + barWidth - radius, barY + barHeight);
-      // Bottom left corner
-      ctx.lineTo(barX + radius, barY + barHeight);
-      ctx.quadraticCurveTo(barX, barY + barHeight, barX, barY + barHeight - radius);
-      // Top left corner
-      ctx.lineTo(barX, barY + radius);
-      ctx.quadraticCurveTo(barX, barY, barX + radius, barY);
+      if (typeof ctx.roundRect === 'function') {
+          ctx.beginPath();
+          ctx.roundRect(barX, barY, barWidth, barHeight, radius+1)
+      } else { // compability for older browsers (may be removed in the next updates)
+          ctx.beginPath();
+          // Top left corner
+          ctx.moveTo(barX + radius, barY);
+          // Top right corner
+          ctx.lineTo(barX + barWidth - radius, barY);
+          ctx.quadraticCurveTo(barX + barWidth, barY, barX + barWidth, barY + radius);
+          // Bottom right corner
+          ctx.lineTo(barX + barWidth, barY + barHeight - radius);
+          ctx.quadraticCurveTo(barX + barWidth, barY + barHeight, barX + barWidth - radius, barY + barHeight);
+          // Bottom left corner
+          ctx.lineTo(barX + radius, barY + barHeight);
+          ctx.quadraticCurveTo(barX, barY + barHeight, barX, barY + barHeight - radius);
+          // Top left corner
+          ctx.lineTo(barX, barY + radius);
+          ctx.quadraticCurveTo(barX, barY, barX + radius, barY);
+      }
       
       ctx.fill();
       ctx.stroke();
