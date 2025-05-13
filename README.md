@@ -1,5 +1,5 @@
 # SimpleBarPieCard.js for HomeAssistant
-![SimpleBarPieCard](https://github.com/user-attachments/assets/9174c8fb-da54-46bb-bad5-f079760bdd26)
+![SimpleBarPieCard](https://github.com/user-attachments/assets/c2992bb5-c4aa-48b5-b73f-cb87c736cbfc)
 
 ## Installation
 Upload the **SimpleBarPieCard.js** file to your **config/www/** (or **homeassistant/www/**) folder, then go to
@@ -33,7 +33,7 @@ Here is how:
 ### Horizontal bar chart
 The horizontal bar chart supports colored icons!
 
-![Horizontal bar chart](https://github.com/user-attachments/assets/1881cf96-cc88-4329-ba8e-6612b5c433c2)
+![Horizontal bar chart](https://github.com/user-attachments/assets/676fe5eb-4e88-4281-b3cb-2bff6425b32c)
 ```
 type: custom:simple-bar-pie
 title: My horizontal bar chart
@@ -48,13 +48,13 @@ entities:
     icon: mdi:dishwasher
     color: blue
   - entity: sensor.sensor3
-    name: Washing
+    name: Washer
     icon: mdi:washing-machine
     color: green
 ```
 
 ### Vertical bar chart
-![Vertical bar chart](https://github.com/user-attachments/assets/06090cb4-ac93-403f-8b90-c658408345a5)
+![Vertical bar chart](https://github.com/user-attachments/assets/dfc75734-4950-40be-b3d1-623aabad3958)
 ```
 type: custom:simple-bar-pie
 title: My vertical bar chart
@@ -69,7 +69,7 @@ entities:
 ```
 
 ### Pie chart
-![Pie chart](https://github.com/user-attachments/assets/244f9253-0546-411b-8f81-097e637ad27e)
+![Pie chart](https://github.com/user-attachments/assets/6111f466-e469-44d9-99c2-41c46e263537)
 ```
 type: custom:simple-bar-pie
 title: My pie Chart
@@ -82,3 +82,4 @@ entities:
   - entity: sensor.your_sensor3
     name: Custom Name
 ```
+Note: Relatively small numbers (in comparison to the total values) are not shown on the pie. That's why, e.g., the green are has no number. This is on purpose.
