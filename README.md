@@ -82,4 +82,4 @@ entities:
   - entity: sensor.your_sensor3
     name: Custom Name
 ```
-Note: Relatively small numbers (in comparison to the total values) are not shown on the pie. That's why, e.g., the green are has no number. This is on purpose.
+Note: Relatively small numbers (in comparison to the total values) are not shown on the pie. That's why, e.g., the green segment intentionally has no number.
